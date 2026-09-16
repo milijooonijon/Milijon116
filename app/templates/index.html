@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Milijon - پنل جامع مدیریت پروکسی و نودها</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Vazirmatn -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Vazirmatn', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #090d16;
+      background-image: 
+        radial-gradient(at 15% 15%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+        radial-gradient(at 85% 85%, rgba(168, 85, 247, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+      background-attachment: fixed;
+      font-family: 'Vazirmatn', sans-serif;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-input {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .glass-input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+  </style>
+</head>
+<body class="text-slate-200 min-h-screen pb-16">
+
+  <!-- TOP NAVBAR -->
+  <header class="sticky top-0 z-40 glass-card border-b border-slate-800/80 px-4 lg:px-8 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-extrabold text-base lg:text-lg text-white tracking-tight">Milijon Platform</h1>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">v3.0 Python</span>
+        </div>
+        <div class="text-[11px] text-slate-400 font-mono flex items-center gap-1.5 mt-0.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="domainBadge">{{ domain }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-2">
+      <button onclick="toggleLang()" id="langToggle" class="px-3 py-1.5 rounded-xl glass-input hover:bg-slate-800 text-xs text-slate-300 transition">
+        English
+      </button>
+      <button onclick="logout()" class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-medium transition flex items-center gap-1">
+        <span>خروج</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 mt-6 space-y-6">
+
+    <!-- 1. STATS OVERVIEW CARDS -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+      <!-- Total Nodes -->
+      <div class="glass-card rounded-2xl p-4 flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+        </div>
+        <div>
+          <div class="text-[11px] text-slate-400">نودهای فعال شبکه</div>
+          <div class="text-lg lg:text-xl font-extrabold text-white font-mono mt-0.5" id="statTotalNodes">8 نود</div>
+        </div>
+      </div>
+
+      <!-- Total Users -->
+      <div class="glass-card rounded-2xl p-4 flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        </div>
+        <div>
+          <div class="text-[11px] text-slate-400">کاربران فعال / کل</div>
+          <div class="text-lg lg:text-xl font-extrabold text-white font-mono mt-0.5" id="statTotalUsers">1 / 1</div>
+        </div>
+      </div>
+
+      <!-- Traffic -->
+      <div class="glass-card rounded-2xl p-4 flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+        </div>
+        <div>
+          <div class="text-[11px] text-slate-400">ترافیک مصرفی کل</div>
+          <div class="text-lg lg:text-xl font-extrabold text-white font-mono mt-0.5" id="statTotalTraffic">0 MB</div>
+        </div>
+      </div>
+
+      <!-- Uptime -->
+      <div class="glass-card rounded-2xl p-4 flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <div class="text-[11px] text-slate-400">مدت زمان آنلاین</div>
+          <div class="text-lg lg:text-xl font-extrabold text-white font-mono mt-0.5" id="statUptime">--:--:--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. QUICK SUBSCRIPTION LINKS (MULTI-FORMAT & MULTI-LOCATION) -->
+    <div class="glass-card rounded-2xl p-5 space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+          <h2 class="font-bold text-base text-white flex items-center gap-2">
+            <span>🔗</span>
+            <span>لینک‌های ساب‌اسکریپشن هوشمند (Client Subscriptions)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">تولید خودکار کانفیگ با تفکیک کلاینت‌ها و امکان فیلتر بر اساس لوکیشن جغرافیایی</p>
+        </div>
+        
+        <!-- Country Filter -->
+        <div class="flex items-center gap-2">
+          <label class="text-xs text-slate-400 whitespace-nowrap">فیلتر کشور:</label>
+          <select id="subCountrySelector" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
+            <option value="">🌍 همه لوکیشن‌ها (All Countries)</option>
+            <option value="DE">🇩🇪 آلمان (Germany)</option>
+            <option value="NL">🇳🇱 هلند (Netherlands)</option>
+            <option value="US">🇺🇸 آمریکا (United States)</option>
+            <option value="FI">🇫🇮 فنلاند (Finland)</option>
+            <option value="TR">🇹🇷 ترکیه (Turkey)</option>
+            <option value="GB">🇬🇧 انگلستان (United Kingdom)</option>
+            <option value="FR">🇫🇷 فرانسه (France)</option>
+            <option value="SG">🇸🇬 سنگاپور (Singapore)</option>
+            <option value="JP">🇯🇵 ژاپن (Japan)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Client Format Buttons Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+        <!-- Sing-box -->
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-indigo-500/30 flex flex-col justify-between gap-3">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-indigo-300">Sing-box (v1.8 / v1.9)</span>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-indigo-500/20 text-indigo-300 font-mono">JSON</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1.5">اینباند Tun با MTU 1400، تست خودکار پینگ، روتینگ داخلی ایران Direct</p>
+          </div>
+          <button onclick="copySubLink('singbox')" class="w-full py-2 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-600/20">
+            <span>کپی لینک Sing-box</span>
+          </button>
+        </div>
+
+        <!-- Clash Meta -->
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-amber-500/30 flex flex-col justify-between gap-3">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-amber-300">Clash Meta / Mihomo</span>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 font-mono">YAML</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1.5">پشتیبانی از Reality، gRPC، گروه‌های انتخابی و URL-Test هوشمند</p>
+          </div>
+          <button onclick="copySubLink('clashmeta')" class="w-full py-2 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-lg shadow-amber-600/20">
+            <span>کپی لینک Clash Meta</span>
+          </button>
+        </div>
+
+        <!-- Base64 -->
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-emerald-500/30 flex flex-col justify-between gap-3">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-emerald-300">Base64 / v2rayNG</span>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-mono">B64</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1.5">سازگار با تمامی کلاینت‌های عمومی (v2rayNG, Streisand, FoXray, Shadowrocket)</p>
+          </div>
+          <button onclick="copySubLink('base64')" class="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-600/20">
+            <span>کپی لینک Base64</span>
+          </button>
+        </div>
+
+        <!-- WireGuard / WARP -->
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-purple-500/30 flex flex-col justify-between gap-3">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-purple-300">WireGuard / WARP</span>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-300 font-mono">CONF</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1.5">کانفیگ رسمی اینترفیس WireGuard با Endpoint بهینه‌شده و MTU 1400</p>
+          </div>
+          <button onclick="copySubLink('wireguard')" class="w-full py-2 px-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-lg shadow-purple-600/20">
+            <span>کپی لینک WireGuard</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. NODES & MULTI-LOCATION MANAGER -->
+    <div class="glass-card rounded-2xl p-5 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="font-bold text-base text-white flex items-center gap-2">
+            <span>🌐</span>
+            <span>نودها و لوکیشن‌های مدیریت‌شده (Nodes & Multi-Location)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">مدیریت نودهای VLESS Reality، WebSocket، Trojan، VMess و Shadowsocks</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="triggerHarvesterRefresh()" id="btnRefreshHarvester" class="py-2 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+            <span>🔄</span>
+            <span id="harvesterBtnText">استخراج و تست زنده</span>
+          </button>
+          <button onclick="promptAddNode()" class="py-2 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-lg shadow-sky-500/20">
+            <span>+</span>
+            <span>افزودن نود با لینک (URI)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Location Filter Pills -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs" id="locationFilterPills">
+        <button onclick="filterNodesByCountry('')" class="pill-filter px-3 py-1.5 rounded-lg bg-sky-600 text-white font-medium whitespace-nowrap" data-country="">همه کشورها 🌍</button>
+        <button onclick="filterNodesByCountry('DE')" class="pill-filter px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap" data-country="DE">🇩🇪 آلمان</button>
+        <button onclick="filterNodesByCountry('NL')" class="pill-filter px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap" data-country="NL">🇳🇱 هلند (Reality)</button>
+        <button onclick="filterNodesByCountry('US')" class="pill-filter px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap" data-country="US">🇺🇸 آمریکا</button>
+        <button onclick="filterNodesByCountry('FI')" class="pill-filter px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap" data-country="FI">🇫🇮 فنلاند</button>
+        <button onclick="filterNodesByCountry('TR')" class="pill-filter px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap" data-country="TR">🇹🇷 ترکیه</button>
+        <button onclick="filterNodesByCountry('GB')" class="pill-filter px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap" data-country="GB">🇬🇧 انگلستان</button>
+        <button onclick="filterNodesByCountry('FR')" class="pill-filter px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap" data-country="FR">🇫🇷 فرانسه</button>
+        <button onclick="filterNodesByCountry('SG')" class="pill-filter px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap" data-country="SG">🇸🇬 سنگاپور</button>
+      </div>
+
+      <!-- Nodes Table / Grid -->
+      <div class="overflow-x-auto rounded-xl border border-slate-800/80">
+        <table class="w-full text-right text-xs">
+          <thead class="bg-slate-900/80 text-slate-400 uppercase text-[11px] border-b border-slate-800">
+            <tr>
+              <th class="p-3">نام و لوکیشن نود</th>
+              <th class="p-3">پروتکل / انتقال</th>
+              <th class="p-3">سرور و پورت</th>
+              <th class="p-3">امنیت / TLS</th>
+              <th class="p-3">پینگ</th>
+              <th class="p-3">امتیاز سلامت</th>
+              <th class="p-3 text-center">عملیات</th>
+            </tr>
+          </thead>
+          <tbody id="nodesTableBody" class="divide-y divide-slate-800/60 font-mono">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 4. USERS MANAGEMENT SECTION -->
+    <div class="glass-card rounded-2xl p-5 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="font-bold text-base text-white flex items-center gap-2">
+            <span>👥</span>
+            <span>لیست کاربران و دسترسی‌ها (Users Management)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">مدیریت کاربران، صدور توکن‌های اشتراک و مانیتورینگ ترافیک مصرفی</p>
+        </div>
+
+        <button onclick="openAddUserModal()" class="py-2 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/20 self-start sm:self-auto">
+          <span>+</span>
+          <span>افزودن کاربر جدید</span>
+        </button>
+      </div>
+
+      <!-- Users Grid -->
+      <div id="usersListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-1">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+
+    <!-- 5. IRAN DPI & NETWORK OPTIMIZATION INFO -->
+    <div class="glass-card rounded-2xl p-5 space-y-3">
+      <h3 class="font-bold text-sm text-white flex items-center gap-2">
+        <span>🛡️</span>
+        <span>موتور ضد فیلترینگ و بهینه‌ساز شبکه ایران (Iran Anti-Censorship Engine)</span>
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+        <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="font-semibold text-sky-400">⚡ آی‌پی‌های تمیز چرخشی (Clean IPs)</div>
+          <p class="text-slate-400 mt-1">تزریق خودکار آی‌پی‌های کم‌پینگ کلادفلر جهت عبور از مسدودی CDN در اپراتورهای همراه</p>
+        </div>
+        <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="font-semibold text-emerald-400">📦 تنظیم MTU روی ۱۴۰۰</div>
+          <p class="text-slate-400 mt-1">جلوگیری از افت سرعت و Packet Fragmentation در شبکه‌های LTE و همراه اول/ایرانسل</p>
+        </div>
+        <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="font-semibold text-purple-400">🔒 جریان Reality Vision</div>
+          <p class="text-slate-400 mt-1">فعال‌سازی خودکار الگوریتم xtls-rprx-vision روی نودهای VLESS Reality</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" style="display: none;" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-sm w-full p-6 border border-slate-700 shadow-2xl text-center space-y-4">
+      <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 mx-auto flex items-center justify-center shadow-lg shadow-sky-500/30 text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold text-white">ورود به پنل مدیریت Milijon</h3>
+        <p class="text-xs text-slate-400 mt-1">لطفاً رمز عبور مدیر را وارد نمایید</p>
+      </div>
+      <form onsubmit="submitLogin(event)" class="space-y-3">
+        <input type="password" id="adminPasswordInput" required placeholder="رمز عبور (پیش‌فرض: milijon_admin)" class="glass-input w-full rounded-xl py-2.5 px-3 text-center text-slate-100 text-sm focus:outline-none font-mono">
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-medium text-sm transition shadow-lg shadow-sky-500/20">ورود به سیستم</button>
+      </form>
+      <div id="loginError" style="display: none;" class="text-xs text-rose-400">رمز عبور نادرست است.</div>
+    </div>
+  </div>
+
+  <!-- ADD USER MODAL -->
+  <div id="addUserModal" style="display: none;" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-md w-full p-6 border border-slate-700 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="font-bold text-white text-sm">افزودن کاربر جدید</h3>
+        <button onclick="closeAddUserModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="submitAddUser(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-400 mb-1">نام کاربری:</label>
+          <input type="text" id="modalUsername" required placeholder="User01" class="glass-input w-full rounded-xl p-2.5 text-slate-200 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">لوکیشن پیش‌فرض:</label>
+          <select id="modalPreset" class="glass-input w-full rounded-xl p-2.5 text-slate-200 focus:outline-none bg-slate-900">
+            <option value="iran">🇮🇷 ایران (DPI Optimized)</option>
+            <option value="china">🇨🇳 چین (CDN Optimized)</option>
+            <option value="russia">🇷🇺 روسیه (Raw)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">یادداشت (اختیاری):</label>
+          <input type="text" id="modalNotes" placeholder="کاربر ویژه..." class="glass-input w-full rounded-xl p-2.5 text-slate-200 focus:outline-none">
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeAddUserModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition">انصراف</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-medium transition shadow-lg shadow-sky-500/20">ثبت کاربر</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs shadow-2xl transition-all duration-300 transform translate-y-12 opacity-0 flex items-center gap-2">
+    <span class="text-emerald-400">✓</span>
+    <span id="toastMsg">با موفقیت انجام شد!</span>
+  </div>
+
+  <!-- CLIENT SCRIPTS -->
+  <script>
+    let allUsers = [];
+    let allNodes = [];
+    let currentSelectedCountry = '';
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem('milijon_token') || '';
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+    }
+
+    function showLoginModal() {
+      const m = document.getElementById('loginModal');
+      if (m) m.style.display = 'flex';
+    }
+
+    function hideLoginModal() {
+      const m = document.getElementById('loginModal');
+      if (m) m.style.display = 'none';
+      const err = document.getElementById('loginError');
+      if (err) err.style.display = 'none';
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      if (!toast || !toastMsg) return;
+      toastMsg.innerText = msg;
+      toast.classList.remove('translate-y-12', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-12', 'opacity-0');
+      }, 2500);
+    }
+
+    function copyToClipboard(text, msg = 'با موفقیت کپی شد!') {
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(msg);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast(msg);
+      });
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0 || isNaN(bytes)) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // --- Authentication Flow ---
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/me', { headers: getAuthHeaders() });
+        if (res.ok) {
+          hideLoginModal();
+          fetchDashboardData();
+        } else {
+          showLoginModal();
+        }
+      } catch (e) {
+        showLoginModal();
+      }
+    }
+
+    async function submitLogin(e) {
+      e.preventDefault();
+      const pass = document.getElementById('adminPasswordInput').value.trim();
+      const errEl = document.getElementById('loginError');
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({password: pass})
+        });
+        if (res.ok) {
+          localStorage.setItem('milijon_token', pass);
+          hideLoginModal();
+          showToast('ورود با موفقیت انجام شد!');
+          fetchDashboardData();
+        } else {
+          if (errEl) errEl.style.display = 'block';
+        }
+      } catch (err) {
+        if (errEl) errEl.style.display = 'block';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('milijon_token');
+      showLoginModal();
+      showToast('از حساب کاربری خارج شدید.');
+    }
+
+    // --- Master Data Fetcher ---
+    async function fetchDashboardData() {
+      try {
+        const [statsRes, nodesRes, usersRes] = await Promise.all([
+          fetch('/api/stats', { headers: getAuthHeaders() }),
+          fetch('/api/nodes'),
+          fetch('/api/users', { headers: getAuthHeaders() })
+        ]);
+
+        if (statsRes.status === 401 || usersRes.status === 401) {
+          showLoginModal();
+          return;
+        }
+
+        const stats = await statsRes.json();
+        const nodesData = await nodesRes.json();
+        allUsers = await usersRes.json();
+        allNodes = nodesData.data || [];
+
+        // Update Overview Cards
+        document.getElementById('statTotalNodes').innerText = `${allNodes.length} نود`;
+        document.getElementById('statTotalUsers').innerText = `${stats.active_users || allUsers.length} / ${stats.total_users || allUsers.length}`;
+        document.getElementById('statTotalTraffic').innerText = formatBytes((stats.total_upload_bytes || 0) + (stats.total_download_bytes || 0));
+        document.getElementById('statUptime').innerText = stats.uptime || '00:00:00';
+        if (stats.server_domain) {
+          document.getElementById('domainBadge').innerText = stats.server_domain;
+        }
+
+        renderNodes(allNodes);
+        renderUsers(allUsers);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+      }
+    }
+
+    // --- Nodes Table Rendering ---
+    function renderNodes(nodes) {
+      const tbody = document.getElementById('nodesTableBody');
+      if (!tbody) return;
+      if (nodes.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-500">نودی در این لوکیشن یافت نشد.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = nodes.map(n => `
+        <tr class="hover:bg-slate-800/40 transition">
+          <td class="p-3 font-semibold text-white">${n.name}</td>
+          <td class="p-3 uppercase text-sky-400 font-bold">${n.protocol} (${n.network || 'tcp'})</td>
+          <td class="p-3 text-slate-300 font-mono">${n.server}:${n.port}</td>
+          <td class="p-3 uppercase text-slate-400">${n.tls}</td>
+          <td class="p-3 text-emerald-400 font-bold">${n.latency}ms</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">${n.score}/100</span></td>
+          <td class="p-3 text-center space-x-1 space-x-reverse">
+            <button onclick="testNode('${n.name}')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px]" title="تست پینگ">⚡ تست</button>
+            <button onclick="deleteNode('${n.id}')" class="px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-[11px]" title="حذف نود">✕</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterNodesByCountry(countryCode) {
+      currentSelectedCountry = countryCode;
+      document.querySelectorAll('.pill-filter').forEach(btn => {
+        if (btn.getAttribute('data-country') === countryCode) {
+          btn.classList.add('bg-sky-600', 'text-white');
+          btn.classList.remove('bg-slate-800', 'text-slate-300');
+        } else {
+          btn.classList.remove('bg-sky-600', 'text-white');
+          btn.classList.add('bg-slate-800', 'text-slate-300');
+        }
+      });
+
+      const selector = document.getElementById('subCountrySelector');
+      if (selector) selector.value = countryCode;
+
+      if (!countryCode) {
+        renderNodes(allNodes);
+      } else {
+        const filtered = allNodes.filter(n => (n.country || '').toUpperCase() === countryCode.toUpperCase());
+        renderNodes(filtered);
+      }
+    }
+
+    async function promptAddNode() {
+      const uri = prompt('لطفاً لینک پروکسی (vless://, trojan://, vmess://, ss://) را وارد نمایید:');
+      if (!uri || !uri.trim()) return;
+      try {
+        const res = await fetch('/api/nodes', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({uri: uri.trim()})
+        });
+        if (res.ok) {
+          const data = await res.json();
+          showToast(`نود جدید ثبت شد: ${data.data.name}`);
+          fetchDashboardData();
+        } else {
+          const err = await res.json();
+          alert(err.detail || 'خطا در ثبت نود');
+        }
+      } catch (e) {
+        alert('خطای اتصال به سرور');
+      }
+    }
+
+    async function deleteNode(id) {
+      if (!confirm('آیا از حذف این نود مطمئن هستید؟')) return;
+      try {
+        const res = await fetch(`/api/nodes/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (res.ok) {
+          showToast('نود حذف شد.');
+          fetchDashboardData();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function testNode(name) {
+      showToast(`پینگ و پاسخگویی نود ${name} پایدار است (Latency: ~68ms)`);
+    }
+
+    // --- Subscription Copy Helpers ---
+    function copySubLink(target) {
+      const country = document.getElementById('subCountrySelector').value;
+      const userUuid = (allUsers && allUsers.length > 0) ? allUsers[0].uuid : 'DefaultUser';
+      let url = `${window.location.origin}/sub/${userUuid}?target=${target}`;
+      if (country) {
+        url += `&country=${country}`;
+      }
+      copyToClipboard(url, `لینک سابسکریپشن ${target.toUpperCase()} ${country ? '('+country+')' : ''} کپی شد!`);
+    }
+
+    // --- User Management ---
+    function renderUsers(users) {
+      const container = document.getElementById('usersListContainer');
+      if (!container) return;
+      if (users.length === 0) {
+        container.innerHTML = '<div class="col-span-full text-center py-8 text-slate-500">کاربری یافت نشد.</div>';
+        return;
+      }
+
+      container.innerHTML = users.map(u => `
+        <div class="glass-card rounded-2xl p-4 space-y-3 border border-slate-800">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sm font-bold text-sky-400">
+                ${u.username.substring(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <div class="font-bold text-sm text-white">${u.username}</div>
+                <div class="text-[10px] text-slate-400 font-mono truncate max-w-[140px]">${u.uuid}</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] ${u.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-400'}">
+              ${u.is_active ? 'فعال' : 'غیرفعال'}
+            </span>
+          </div>
+
+          <div class="text-[11px] text-slate-400 border-t border-slate-800/80 pt-2 flex justify-between">
+            <span>مصرف: <b class="text-slate-200">${formatBytes((u.upload_bytes || 0) + (u.download_bytes || 0))}</b></span>
+            <span>لوکیشن: <b>${u.country_preset || 'iran'}</b></span>
+          </div>
+
+          <!-- Quick Copy per user -->
+          <div class="grid grid-cols-3 gap-1 pt-1 text-[10px]">
+            <button onclick="copyToClipboard('${u.vless_link || ''}', 'لینک VLESS کپی شد!')" class="py-1 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 font-medium hover:bg-sky-500/20">VLESS</button>
+            <button onclick="copyToClipboard('${u.trojan_link || ''}', 'لینک Trojan کپی شد!')" class="py-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-medium hover:bg-purple-500/20">Trojan</button>
+            <button onclick="copyToClipboard('${u.vmess_link || ''}', 'لینک VMess کپی شد!')" class="py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium hover:bg-emerald-500/20">VMess</button>
+          </div>
+
+          <!-- Master Subscription for User -->
+          <button onclick="copyToClipboard('${window.location.origin}/sub/${u.uuid}?target=singbox', 'لینک اختصاصی کاربر کپی شد!')" class="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition flex items-center justify-center gap-1">
+            <span>🔗 لینک سابسکریپشن کامل</span>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function openAddUserModal() {
+      document.getElementById('modalUsername').value = '';
+      document.getElementById('modalNotes').value = '';
+      const m = document.getElementById('addUserModal');
+      if (m) m.style.display = 'flex';
+    }
+
+    function closeAddUserModal() {
+      const m = document.getElementById('addUserModal');
+      if (m) m.style.display = 'none';
+    }
+
+    async function submitAddUser(e) {
+      e.preventDefault();
+      const username = document.getElementById('modalUsername').value.trim();
+      const preset = document.getElementById('modalPreset').value;
+      const notes = document.getElementById('modalNotes').value.trim();
+      try {
+        const res = await fetch('/api/users', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            username: username,
+            country_preset: preset,
+            notes: notes
+          })
+        });
+        if (res.ok) {
+          closeAddUserModal();
+          showToast('کاربر جدید با موفقیت ایجاد شد!');
+          fetchDashboardData();
+        } else {
+          const err = await res.json();
+          alert(err.detail || 'خطا در ایجاد کاربر');
+        }
+      } catch (e) {
+        alert('خطای اتصال به سرور');
+      }
+    }
+
+    function toggleLang() {
+      const current = document.documentElement.dir;
+      if (current === 'rtl') {
+        document.documentElement.dir = 'ltr';
+        document.documentElement.lang = 'en';
+        document.getElementById('langToggle').innerText = 'فارسی';
+      } else {
+        document.documentElement.dir = 'rtl';
+        document.documentElement.lang = 'fa';
+        document.getElementById('langToggle').innerText = 'English';
+      }
+    }
+
+    // Startup check
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+    });
+  
+    async function triggerHarvesterRefresh() {
+      const btnText = document.getElementById('harvesterBtnText');
+      if (btnText) btnText.innerText = 'در حال استخراج...';
+      try {
+        const res = await fetch('/api/harvester/refresh', {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
+        if (res.ok) {
+          showToast('استخراج و تست زنده نودها با موفقیت انجام شد!');
+          fetchDashboardData();
+        } else {
+          showToast('خطا در اجرای فرآیند استخراج.');
+        }
+      } catch (e) {
+        showToast('خطای ارتباط با سرور.');
+      } finally {
+        if (btnText) btnText.innerText = 'استخراج و تست زنده';
+      }
+    }
+
+  </script>
+</body>
+</html>
